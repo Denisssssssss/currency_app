@@ -4,10 +4,7 @@ import com.example.curency.impl.models.GifBody;
 import com.example.curency.lib.services.GifService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +16,12 @@ public class CurrencyController {
     @GetMapping("/{base}")
     public ResponseEntity<GifBody> getTrend(@PathVariable("base") String base) {
         return ResponseEntity.ok(new GifBody(gifService.getGifByTrend(base)));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleException(IllegalStateException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
     }
 }

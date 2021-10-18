@@ -31,11 +31,18 @@ public class GifServiceImpl implements GifService {
     private Integer limit;
 
     @Override
-    public String getGifByTrend(String base) {
+    public String getGifByTrend(String base) throws IllegalStateException {
 
         String json;
+        boolean trendIsPositive;
 
-        if (currencyService.trendIsPositive(base)) {
+        try {
+            trendIsPositive = currencyService.trendIsPositive(base);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException(e);
+        }
+
+        if (trendIsPositive) {
             json = gifClient.getGif(new GiphyParams(key, positive, limit, (int) (Math.random() * 25)));
         } else {
             json = gifClient.getGif(new GiphyParams(key, negative, limit, (int) (Math.random() * 25)));
